@@ -44,6 +44,5 @@ void Five_Input_Scanner::process()
   }
 
   mixer.process();
-  //output.set(trapezoid[0].output.get());
   output.set(mixer.output.get());
 }

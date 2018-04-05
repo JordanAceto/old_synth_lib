@@ -16,7 +16,6 @@ class Sine_Shaper : public Waveshaper_Interface
 {
 public:
     Sine_Shaper() { fillLut(); }
-    virtual ~Sine_Shaper() {}
 
     virtual float process(const Phase_Accumulator &core) const override
     {
@@ -39,15 +38,16 @@ class Naive_Triangle_Shaper : public Waveshaper_Interface
 {
   virtual float process(const Phase_Accumulator &core) const override
   {
-    float tri;
-    const uint32_t quarter_scale = 0x40000000, half_scale = 0x80000000, full_scale = 0xFFFFFFFF;
-    uint32_t phase_shifted_core = core.getAccumulator() + quarter_scale;
-    if (phase_shifted_core < half_scale)
-      tri = (phase_shifted_core / float(quarter_scale) - 1.0);
-    else
-      tri = (full_scale - phase_shifted_core) / float(quarter_scale) - 1.0;
+    const uint32_t quarter_scale = 0x40000000,
+                   half_scale    = 0x80000000,
+                   full_scale    = 0xFFFFFFFF;
 
-    return tri;
+    uint32_t phase_shifted_core = core.getAccumulator() + quarter_scale;
+
+    if (phase_shifted_core < half_scale)
+      return phase_shifted_core / float(quarter_scale) - 1.0;
+    else
+      return (full_scale - phase_shifted_core) / float(quarter_scale) - 1.0;
   }
 };
 

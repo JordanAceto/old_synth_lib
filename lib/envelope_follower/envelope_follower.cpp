@@ -1,5 +1,19 @@
 #include "envelope_follower.hpp"
 
+
+Envelope_Follower::Envelope_Follower()
+{
+  lpf.input.plugIn(&fwr.output);
+  lpf.cutoff_input.plugIn(&decay_control.output);
+  decay_control.setGain(0.03);
+}
+
+void Envelope_Follower::setSampleRate(float sample_rate)
+{
+  Is_Tickable::setSampleRate(sample_rate);
+  lpf.setSampleRate(sample_rate);
+}
+
 void Envelope_Follower::tick()
 {
   if (fwr.output.get() > peak)

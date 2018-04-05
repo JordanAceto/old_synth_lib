@@ -9,19 +9,10 @@
 class Envelope_Follower : public Is_Tickable, public Is_Processable
 {
 public:
-  Envelope_Follower()
-  {
-    lpf.input.plugIn(&fwr.output);
-    lpf.cutoff_input.plugIn(&decay_control.output);
-    decay_control.setGain(0.03);
-  }
+  Envelope_Follower();
 
-  void setSampleRate(float sample_rate)
-  {
-    Is_Tickable::setSampleRate(sample_rate);
-    lpf.setSampleRate(sample_rate);
-  }
-
+  void setSampleRate(float sample_rate);
+  
   Full_Wave_Rectifier fwr;
   Signal_Input_Feedthrough decay_control;
   Output_Interface output;

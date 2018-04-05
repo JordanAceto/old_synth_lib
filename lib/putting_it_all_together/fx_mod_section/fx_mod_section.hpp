@@ -29,12 +29,12 @@ public:
     ef_input_vca.control_input.plugIn(&control_input[EF_SENSITIVITY].output);
     ef.fwr.input.plugIn(&ef_input_vca.output);
     ef.decay_control.plugIn(&control_input[EF_ATTACK].output);
-    ef_output_vca.x_input.plugIn(&ef.output);
-    ef_output_vca.y_input.plugIn(&control_input[EF_LEVEL].output);
+    ef_attenuverter.x_input.plugIn(&ef.output);
+    ef_attenuverter.y_input.plugIn(&control_input[EF_LEVEL].output);
 
     mixer.input[Mixer::INPUT_1].plugIn(&control_input[INITIAL_FREQUENCY].output);
-    mixer.input[Mixer::INPUT_2].plugIn(&lfo_output_vca.output);
-    mixer.input[Mixer::INPUT_3].plugIn(&ef_output_vca.output);
+    mixer.input[Mixer::INPUT_2].plugIn(&lfo_wave_Scanner.output);
+    mixer.input[Mixer::INPUT_3].plugIn(&ef_attenuverter.output);
 
     output_dac[MAIN_CONTROL_DAC].input.plugIn(&mixer.output);
     output_dac[RESONANCE_DAC].input.plugIn(&control_input[RESONANCE].output);
@@ -60,7 +60,7 @@ public:
 
     for (auto &dac : output_dac)
       dac.process();
-      
+
     lfo.process();
     noise.process();
     lfo_wave_scanner.process();
@@ -68,7 +68,7 @@ public:
 
     ef.process();
     ef_input_vca.process();
-    ef_output_vca.process();
+    ef_attenuverter.process();
 
     mixer.process();
   }
@@ -114,7 +114,7 @@ private:
 
   VCA lfo_output_vca;
   VCA ef_input_vca;
-  Ring_Mod ef_output_vca;
+  Ring_Mod ef_attenuverter;
 
   Mixer mixer;
 

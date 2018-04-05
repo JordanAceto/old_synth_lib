@@ -21,16 +21,7 @@ private:
 class Four_Pole_Lowpass_Filter : public Is_Tickable, public Is_Processable
 {
 public:
-  Four_Pole_Lowpass_Filter()
-  {
-    stage[0].input.plugIn(&input.output);
-
-    for (int i = 1; i < 4; i ++)
-      stage[i].input.plugIn(&stage[i - 1].output);
-
-    for (auto &s : stage)
-      s.cutoff_input.plugIn(&cutoff_input.output);
-  }
+  Four_Pole_Lowpass_Filter();
 
   void tick() override;
   void process() override;

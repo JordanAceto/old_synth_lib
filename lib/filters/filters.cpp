@@ -11,6 +11,17 @@ void One_Pole_Lowpass_Filter::process()
   output.set(sample);
 }
 
+Four_Pole_Lowpass_Filter::Four_Pole_Lowpass_Filter()
+{
+  stage[0].input.plugIn(&input.output);
+
+  for (int i = 1; i < 4; i ++)
+    stage[i].input.plugIn(&stage[i - 1].output);
+
+  for (auto &s : stage)
+    s.cutoff_input.plugIn(&cutoff_input.output);
+}
+
 void Four_Pole_Lowpass_Filter::tick()
 {
   for (auto &s : stage)
