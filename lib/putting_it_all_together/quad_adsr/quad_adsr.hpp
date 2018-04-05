@@ -12,9 +12,7 @@ public:
   Quad_ADSR();
 
   void setSampleRate(float sample_rate) override;
-
   void tick() override;
-
   void process() override;
 
   enum ADSR_CHANNEL
