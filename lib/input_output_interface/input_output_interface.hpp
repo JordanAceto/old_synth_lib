@@ -46,7 +46,7 @@ private:
   float gain = 1.0, offset = 0.0;
 };
 
-class Gate_Input : public Input_Interface, public Is_Processable
+class Gate_Input : public Input_Interface
 {
 public:
   float get() const override;
@@ -60,7 +60,7 @@ private:
   bool gate_is_high, gate_was_high, rising_edge, falling_edge;
 };
 
-class Signal_Input_Feedthrough : public Signal_Input, public Is_Processable
+class Signal_Input_Feedthrough : public Signal_Input
 {
 public:
   Output_Interface output;

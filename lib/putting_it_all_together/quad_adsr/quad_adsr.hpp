@@ -6,7 +6,6 @@
 
 #include <Arduino.h>
 
-
 class Quad_ADSR : public Is_Tickable, public Is_Processable
 {
 public:

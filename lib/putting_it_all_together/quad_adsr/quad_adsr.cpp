@@ -5,13 +5,11 @@ Quad_ADSR::Quad_ADSR()
   analogWriteRes(num_ADC_bits);
   analogReadResolution(num_DAC_bits);
 
-  setSampleRate(sample_rate);
-
-  for (int i = 0; i < NUM_ADSR_CHANNELS; i ++)
+  for (int channel = 0; channel < NUM_ADSR_CHANNELS; channel ++)
   {
-    adsr[i].gate_input.plugIn(&gate_in[i].output);
-    adsr[i].trigger_input.plugIn(&trigger_in[i].output);
-    pwm_dac[i].input.plugIn(&adsr[i].output);
+    adsr[channel].gate_input.plugIn(&gate_in[channel].output);
+    adsr[channel].trigger_input.plugIn(&trigger_in[channel].output);
+    pwm_dac[channel].input.plugIn(&adsr[channel].output);
   }
 }
 
@@ -23,17 +21,21 @@ void Quad_ADSR::setSampleRate(float sample_rate)
 
 void Quad_ADSR::tick()
 {
-  for (auto &env : adsr)
-    env.tick();
+  for (int channel = 0; channel < NUM_ADSR_CHANNELS; channel ++)
+  {
+    gate_in[channel].process();
+    trigger_in[channel].process();
+    adsr[channel].tick();
+  }
 }
 
 void Quad_ADSR::process()
 {
-  for (int i = 0; i < NUM_ADSR_CHANNELS; i ++)
+  for (int channel = 0; channel < NUM_ADSR_CHANNELS; channel ++)
   {
-    pot[i].process();
-    pwm_dac[i].process();
-    adsr[i].process();
+    pot[channel].process();
+    pwm_dac[channel].process();
+    adsr[channel].process();
   }
 }
 
