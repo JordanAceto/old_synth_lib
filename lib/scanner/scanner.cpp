@@ -1,56 +1,49 @@
 #include "scanner.hpp"
 
+Trapezoid_Generator::Trapezoid_Generator()
+{
+  input.setGain(0.5);
+  input.setOffset(0.5);
+}
+
+void Trapezoid_Generator::process()
+{
+  const float plateau_start = center - (0.5 * width);
+  const float plateau_end = center + (0.5 * width);
+
+  if (input.get() < plateau_start)
+    output.set(clamp(input.get() * slope + (1 - slope * plateau_start), 0.0, 1.0));
+  else if (plateau_start <= input.get() && input.get() < plateau_end)
+    output.set(1.0);
+  else if (input.get() >= plateau_end)
+    output.set(clamp(input.get() * -slope + (1 + slope * plateau_end), 0.0, 1.0));
+}
+
+Five_Input_Scanner::Five_Input_Scanner()
+{
+  for (int i = 0; i < NUM_INPUTS; i ++)
+  {
+    mixer.input[i].plugIn(&signal_input[i].output);
+
+    trapezoid[i].input.plugIn(&control_input.output);
+    trapezoid[i].setWidth(1.0 / (2.5 * NUM_INPUTS));
+    trapezoid[i].setSlope(1.0 + NUM_INPUTS);
+    trapezoid[i].setCenter((float)i / (NUM_INPUTS - 1.0));
+  }
+}
+
 void Five_Input_Scanner::process()
 {
-  const float one_eighth = 1.0 / 8.0,
-              three_eighths = 3.0 / 8.0,
-              five_eighths = 5.0 / 8.0,
-              seven_eighths = 7.0 / 8.0,
-              slope = 1.0 / three_eighths;
+  control_input.process();
 
-  trapezoid_1 = clamp(control_input.get() * -2.0 - 1.0, 0.0, 0.8);
+  for (int i = 0; i < NUM_INPUTS; i ++)
+  {
+    trapezoid[i].process();
+    signal_input[i].setGain(trapezoid[i].output.get());
+    signal_input[i].process();
+  }
 
-  if (control_input.get() < -seven_eighths || control_input.get() >= 0.0) // low dead zone
-      trapezoid_2 = 0.0;
-  else if (control_input.get() > -0.5 && control_input.get() < -three_eighths) // high dead zone
-    trapezoid_2 = 1.0;
-  else if (control_input.get() >= -three_eighths) // down ramp
-    trapezoid_2 = control_input.get() * -slope;
-  else if (control_input.get() >= -seven_eighths) // up ramp
-    trapezoid_2 = (control_input.get() + seven_eighths) * slope;
-
-  if (control_input.get() < -three_eighths || control_input.get() >= 0.5) // low dead zone
-      trapezoid_3 = 0.0;
-  else if (control_input.get() > 0.0 && control_input.get() < one_eighth) // high dead zone
-    trapezoid_3 = 1.0;
-  else if (control_input.get() >= one_eighth) // down ramp
-    trapezoid_3 = control_input.get() * -slope + 1.33;
-  else if (control_input.get() >= -three_eighths) // up ramp
-    trapezoid_3 = (control_input.get() + three_eighths) * slope;
-
-    if (control_input.get() < -one_eighth) // low dead zone
-        trapezoid_4 = 0.0;
-    else if (control_input.get() > 0.5 && control_input.get() < five_eighths) // high dead zone
-      trapezoid_4 = 1.0;
-    else if (control_input.get() >= five_eighths) // down ramp
-      trapezoid_4 = control_input.get() * -slope + 2.675;
-    else if (control_input.get() >= one_eighth) // up ramp
-      trapezoid_4 = (control_input.get() - one_eighth) * slope;
-
-    trapezoid_5 = clamp((control_input.get() - 0.5) * slope, 0.0, 1.0);
-
-
-  signal_input[INPUT_1].setGain(trapezoid_1);
-  signal_input[INPUT_2].setGain(trapezoid_2);
-  signal_input[INPUT_3].setGain(trapezoid_3);
-  signal_input[INPUT_4].setGain(trapezoid_4);
-  signal_input[INPUT_5].setGain(trapezoid_5);
-
-  output.set(signal_input[INPUT_1].get() + signal_input[INPUT_2].get() + signal_input[INPUT_3].get() + signal_input[INPUT_4].get() + signal_input[INPUT_5].get());
-/*
-  Serial.print("Input: ");
-  Serial.print(control_input.get());
-  Serial.print("    Output: ");
-  Serial.println(trapezoid_5);
-*/
+  mixer.process();
+  //output.set(trapezoid[0].output.get());
+  output.set(mixer.output.get());
 }

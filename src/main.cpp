@@ -35,6 +35,7 @@ void setup()
   scanner.signal_input[3].plugIn(&lfo.output[LFO::RANDOM]);
   scanner.signal_input[4].plugIn(&noise.output);
   scanner.control_input.plugIn(&pot.output);
+  //scanner.control_input.plugIn(&lfo.output[LFO::UP_SAW]);
 
 
   trap.input.plugIn(&lfo.output[LFO::UP_SAW]);
@@ -45,7 +46,7 @@ void setup()
 
   dac1.input.plugIn(&lfo.output[LFO::SINE]);
   dac1.input.plugIn(&scanner.output);
-  dac1.input.plugIn(&trap.output);
+  //dac1.input.plugIn(&trap.output);
 
   dac2.input.plugIn(&lfo.output[LFO::UP_SAW]);
 }
