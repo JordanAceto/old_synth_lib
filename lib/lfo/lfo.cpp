@@ -9,7 +9,8 @@ LFO::LFO()
   waveshape[SQUARE]   = new Naive_Square_Shaper;
   waveshape[RANDOM]   = new Random_Shaper;
 
-  freq_input_scaler.input.plugIn(&frequency_input.output);
+  frequency_input.setGain(0.5);
+  frequency_input.setOffset(0.5);
 }
 
 LFO::~LFO()
@@ -23,8 +24,7 @@ void LFO::process()
   if (frequency_input.isPluggedIn())
   {
     frequency_input.process();
-    freq_input_scaler.process();
-    setFrequency(freq_input_scaler.output.get() * 30 + 0.01);
+    setFrequency(frequency_input.get() * 300 + 0.01);
   }
 
   if (sync_input.isPluggedIn())

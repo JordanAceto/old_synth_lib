@@ -28,13 +28,12 @@ public:
     NUM_LFO_SHAPES
   };
 
-  Signal_Input_Feedthrough frequency_input;
+  Signal_Input frequency_input;
   Gate_Input sync_input;
 
   Output_Interface output[NUM_LFO_SHAPES];
 
 private:
-  Bipolar_To_Unipolar_Converter freq_input_scaler;
   Waveshaper_Interface *waveshape[NUM_LFO_SHAPES];
 };
 

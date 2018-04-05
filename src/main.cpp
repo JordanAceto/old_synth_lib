@@ -10,9 +10,13 @@ Five_Input_Scanner scanner;
 LFO lfo;
 White_Noise_Generator noise;
 
-Arduino_Analog_Input pot(A8);
+Trapezoid_Generator trap;
 
-Arduino_Analog_Output dac(A21);
+Arduino_Analog_Input pot(A8);
+Arduino_Analog_Input pot2(A9);
+
+Arduino_Analog_Output dac1(A21);
+Arduino_Analog_Output dac2(A22);
 
 void setup()
 {
@@ -23,6 +27,8 @@ void setup()
   lfo.setSampleRate(sample_rate);
   lfo.setFrequency(100.0);
 
+  lfo.frequency_input.plugIn(&pot2.output);
+
   scanner.signal_input[0].plugIn(&lfo.output[LFO::TRIANGLE]);
   scanner.signal_input[1].plugIn(&lfo.output[LFO::SINE]);
   scanner.signal_input[2].plugIn(&lfo.output[LFO::SQUARE]);
@@ -31,9 +37,17 @@ void setup()
   scanner.control_input.plugIn(&pot.output);
 
 
+  trap.input.plugIn(&lfo.output[LFO::UP_SAW]);
+  trap.setCenter(0.5);
+  trap.setWidth(0.03);
+  trap.setSlope(10.0);
 
-  dac.input.plugIn(&lfo.output[LFO::SINE]);
-  dac.input.plugIn(&scanner.output);
+
+  dac1.input.plugIn(&lfo.output[LFO::SINE]);
+  dac1.input.plugIn(&scanner.output);
+  dac1.input.plugIn(&trap.output);
+
+  dac2.input.plugIn(&lfo.output[LFO::UP_SAW]);
 }
 
 void loop()
@@ -42,11 +56,15 @@ void loop()
   {
     last_tick = micros();
 
+    trap.process();
+
     lfo.tick();
     lfo.process();
     noise.process();
     pot.process();
+    pot2.process();
     scanner.process();
-    dac.process();
+    dac1.process();
+    dac2.process();
   }
 }
