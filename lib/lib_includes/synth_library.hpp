@@ -11,6 +11,7 @@
 #include "envelope_follower.hpp"
 #include "utilities.hpp"
 #include "filters.hpp"
+#include "scanner.hpp"
 #include "global_constants.hpp"
 
 #endif

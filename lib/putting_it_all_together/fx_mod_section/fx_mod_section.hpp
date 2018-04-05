@@ -14,10 +14,11 @@ public:
 
     lfo.frequency_input.plugIn(&control_input[LFO_RATE].output);
 /*
-    lfo_wave_scanner.input[INPUT_1].plugIn(&lfo.output[LFO::TRIANGLE]); // this is what I want to do
-    lfo_wave_scanner.input[INPUT_1].plugIn(&lfo.output[LFO::SINE]);     // need to write scanner class first
-    lfo_wave_scanner.input[INPUT_1].plugIn(&lfo.output[LFO::SQUARE]);
-    lfo_wave_scanner.input[INPUT_1].plugIn(&lfo.output[LFO::RANDOM]);
+    lfo_wave_scanner.signal_input[INPUT_1].plugIn(&lfo.output[LFO::TRIANGLE]); // this is what I want to do
+    lfo_wave_scanner.signal_input[INPUT_2].plugIn(&lfo.output[LFO::SINE]);     // need to write scanner class first
+    lfo_wave_scanner.signal_input[INPUT_3].plugIn(&lfo.output[LFO::SQUARE]);
+    lfo_wave_scanner.signal_input[INPUT_4].plugIn(&lfo.output[LFO::RANDOM]);
+    lfo_wave_scanner.signal_input[INPUT_5].plugIn(&noise.output);
     lfo_wave_scanner.control_input.plugIn(&control_input[LFO_WAVE].output);
     lfo_output_vca.input.plugIn(&lfo_wave_scanner.output);
 */
@@ -36,7 +37,7 @@ public:
 
     output_dac[MAIN_CONTROL_DAC].input.plugIn(&mixer.output);
     output_dac[RESONANCE_DAC].input.plugIn(&control_input[RESONANCE].output);
-    output_dac[AUDIO_LEVEL_DAC].input.plugIn(&control_input[AUDIO_LEVEL].output);
+    output_dac[WET_DRY_MIX_DAC].input.plugIn(&control_input[WET_DRY_MIX].output);
   }
 
   void setSampleRate(float sample_rate) override;
@@ -48,7 +49,7 @@ public:
   {
     INITIAL_FREQUENCY = 0,
     RESONANCE,
-    AUDIO_LEVEL,
+    WET_DRY_MIX,
 
     LFO_RATE,
     LFO_WAVE,
@@ -79,7 +80,8 @@ private:
   };
 
   LFO lfo;
-  // Scanner lfo_wave_scanner; //does not exist yet
+  White_Noise_Generator noise;
+  // Five_Input_Scanner lfo_wave_scanner; //does not exist yet
   Envelope_Follower ef;
 
   VCA lfo_output_vca;
@@ -92,7 +94,7 @@ private:
   {
     MAIN_CONTROL_DAC,
     RESONANCE_DAC,
-    AUDIO_LEVEL_DAC,
+    WET_DRY_MIX_DAC,
 
     NUM_OUTPUT_DACS
   };
