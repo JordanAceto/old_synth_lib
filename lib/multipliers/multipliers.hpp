@@ -1,0 +1,24 @@
+#ifndef MULTIPLIERS_H_INCLUDED
+#define MULTIPLIERS_H_INCLUDED
+
+#include "input_output_interface.hpp"
+
+class VCA : public Is_Processable
+{
+public:
+  Signal_Input signal_input;
+  Signal_Input control_input;
+  Output_Interface output;
+  void process() override;
+};
+
+class Ring_Mod : public Is_Processable
+{
+public:
+  Signal_Input x_input;
+  Signal_Input y_input;
+  Output_Interface output;
+  void process() override;
+};
+
+#endif
