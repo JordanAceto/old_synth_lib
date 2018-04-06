@@ -14,11 +14,11 @@ public:
 
     lfo.frequency_input.plugIn(&control_input[LFO_RATE].output);
 
-    lfo_wave_scanner.signal_input[INPUT_1].plugIn(&lfo.output[LFO::TRIANGLE]);
-    lfo_wave_scanner.signal_input[INPUT_2].plugIn(&lfo.output[LFO::SINE]);
-    lfo_wave_scanner.signal_input[INPUT_3].plugIn(&lfo.output[LFO::SQUARE]);
-    lfo_wave_scanner.signal_input[INPUT_4].plugIn(&lfo.output[LFO::RANDOM]);
-    lfo_wave_scanner.signal_input[INPUT_5].plugIn(&noise.output);
+    lfo_wave_scanner.signal.input[0].plugIn(&lfo.output[LFO::TRIANGLE]);
+    lfo_wave_scanner.signal.input[1].plugIn(&lfo.output[LFO::SINE]);
+    lfo_wave_scanner.signal.input[2].plugIn(&lfo.output[LFO::SQUARE]);
+    lfo_wave_scanner.signal.input[3].plugIn(&lfo.output[LFO::RANDOM]);
+    lfo_wave_scanner.signal.input[4].plugIn(&noise.output);
 
     lfo_wave_scanner.control_input.plugIn(&control_input[LFO_WAVE].output);
 
@@ -33,7 +33,7 @@ public:
     ef_attenuverter.y_input.plugIn(&control_input[EF_LEVEL].output);
 
     mixer.input[Mixer::INPUT_1].plugIn(&control_input[INITIAL_FREQUENCY].output);
-    mixer.input[Mixer::INPUT_2].plugIn(&lfo_wave_Scanner.output);
+    mixer.input[Mixer::INPUT_2].plugIn(&lfo_wave_scanner.output);
     mixer.input[Mixer::INPUT_3].plugIn(&ef_attenuverter.output);
 
     output_dac[MAIN_CONTROL_DAC].input.plugIn(&mixer.output);

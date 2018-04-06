@@ -40,14 +40,13 @@ public:
     NUM_INPUTS
   };
 
-  Signal_Input_Feedthrough signal_input[NUM_INPUTS];
+  Mixer signal;
   Signal_Input_Feedthrough control_input;
   Output_Interface output;
 
   void process() override;
 
 private:
-  Mixer mixer;
   Trapezoid_Generator trapezoid[NUM_INPUTS];
 };
 

@@ -2,6 +2,7 @@
 
 #include "synth_library.hpp"
 #include "mini_synth/mini_synth.hpp"
+#include "fx_mod_section/fx_mod_section.hpp"
 
 const uint32_t sample_period_in_micros = 1000000.0 / sample_rate;
 uint32_t last_tick;
@@ -29,11 +30,11 @@ void setup()
 
   lfo.frequency_input.plugIn(&pot2.output);
 
-  scanner.signal_input[0].plugIn(&lfo.output[LFO::TRIANGLE]);
-  scanner.signal_input[1].plugIn(&lfo.output[LFO::SINE]);
-  scanner.signal_input[2].plugIn(&lfo.output[LFO::SQUARE]);
-  scanner.signal_input[3].plugIn(&lfo.output[LFO::RANDOM]);
-  scanner.signal_input[4].plugIn(&noise.output);
+  scanner.signal.input[Mixer::INPUT_1].plugIn(&lfo.output[LFO::TRIANGLE]);
+  scanner.signal.input[Mixer::INPUT_2].plugIn(&lfo.output[LFO::SINE]);
+  scanner.signal.input[Mixer::INPUT_3].plugIn(&lfo.output[LFO::SQUARE]);
+  scanner.signal.input[Mixer::INPUT_4].plugIn(&lfo.output[LFO::RANDOM]);
+  scanner.signal.input[Mixer::INPUT_5].plugIn(&noise.output);
   scanner.control_input.plugIn(&pot.output);
   //scanner.control_input.plugIn(&lfo.output[LFO::UP_SAW]);
 

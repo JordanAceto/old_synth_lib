@@ -81,4 +81,43 @@ public:
   void process() override;
 };
 
+struct Signal_Input_Node
+{
+  Signal_Input *input;
+  Signal_Input_Node *next;
+};
+
+class Signal_Input_Linked_List
+{
+public:
+  Signal_Input_Linked_List()
+  {
+    head = nullptr;
+    tail = nullptr;
+  }
+
+  void addInputNode(Signal_Input *new_input)
+  {
+    Signal_Input_Node *temp = new Signal_Input_Node;
+
+    temp->input = new_input;
+    temp->next = nullptr;
+
+    if(!head)
+    {
+      head = temp;
+      tail = temp;
+      temp = nullptr;
+    }
+    else
+    {
+      tail->next = temp;
+      tail = temp;
+    }
+  }
+
+private:
+  Signal_Input_Node *head, *tail;
+};
+
 #endif

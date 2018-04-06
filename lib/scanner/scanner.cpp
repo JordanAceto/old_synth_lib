@@ -23,8 +23,6 @@ Five_Input_Scanner::Five_Input_Scanner()
 {
   for (int i = 0; i < NUM_INPUTS; i ++)
   {
-    mixer.input[i].plugIn(&signal_input[i].output);
-
     trapezoid[i].input.plugIn(&control_input.output);
     trapezoid[i].setWidth(1.0 / (2.5 * NUM_INPUTS));
     trapezoid[i].setSlope(1.0 + NUM_INPUTS);
@@ -39,10 +37,9 @@ void Five_Input_Scanner::process()
   for (int i = 0; i < NUM_INPUTS; i ++)
   {
     trapezoid[i].process();
-    signal_input[i].setGain(trapezoid[i].output.get());
-    signal_input[i].process();
+    signal.input[i].setGain(trapezoid[i].output.get());
   }
 
-  mixer.process();
-  output.set(mixer.output.get());
+  signal.process();
+  output.set(signal.output.get());
 }
