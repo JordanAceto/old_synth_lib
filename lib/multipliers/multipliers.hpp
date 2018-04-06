@@ -3,7 +3,7 @@
 
 #include "input_output_interface.hpp"
 
-class VCA : public Is_Processable
+class Two_Quadrant_Multiplier : public Is_Processable
 {
 public:
   Signal_Input signal_input;
@@ -12,7 +12,7 @@ public:
   void process() override;
 };
 
-class Ring_Mod : public Is_Processable
+class Four_Quadrant_Multiplier : public Is_Processable
 {
 public:
   Signal_Input x_input;

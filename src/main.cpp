@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
 #include "synth_library.hpp"
-#include "mini_synth/mini_synth.hpp"
 #include "fx_mod_section/fx_mod_section.hpp"
 
 const uint32_t sample_period_in_micros = 1000000.0 / sample_rate;

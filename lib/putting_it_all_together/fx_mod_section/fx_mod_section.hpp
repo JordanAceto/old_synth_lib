@@ -129,9 +129,9 @@ private:
   Five_Input_Scanner lfo_wave_scanner;
   Envelope_Follower ef;
 
-  VCA lfo_output_vca;
-  VCA ef_input_vca;
-  Ring_Mod ef_attenuverter;
+  Two_Quadrant_Multiplier lfo_output_vca;
+  Two_Quadrant_Multiplier ef_input_vca;
+  Four_Quadrant_Multiplier ef_attenuverter;
 
   Mixer mixer;
 
