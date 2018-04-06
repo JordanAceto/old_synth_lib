@@ -5,6 +5,8 @@
 #include "base_classes.hpp"
 #include "global_constants.hpp"
 
+#include <Encoder.h>
+
 class Output_Interface
 {
 public:
@@ -121,6 +123,28 @@ public:
 
   Signal_Input input;
   void process() override;
+};
+
+class Rotary_Encoder : public Is_Processable
+{
+public:
+  Rotary_Encoder(int pin1, int pin2) : encoder(pin1, pin2) {}
+
+  void process() override
+  {
+    if (encoder.read() > max_counts)
+      encoder.write(max_counts);
+    if (encoder.read() < -max_counts)
+      encoder.write(-max_counts);
+
+    output.set(encoder.read() / max_counts);
+  }
+
+  Output_Interface output;
+private:
+  const float max_counts = 500.0;
+  Encoder encoder;
+
 };
 
 #endif

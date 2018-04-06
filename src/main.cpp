@@ -6,6 +6,8 @@
 const uint32_t sample_period_in_micros = 1000000.0 / sample_rate;
 uint32_t last_tick;
 
+Rotary_Encoder encoder(15, 14);
+
 Five_Input_Scanner scanner;
 LFO lfo;
 White_Noise_Generator noise;
@@ -39,7 +41,7 @@ void setup()
   scanner.signal.input[Mixer::INPUT_5].plugIn(&noise.output);
   scanner.control_input.plugIn(&pot.output);
   scanner.control_input.unplug();
-  scanner.control_input.plugIn(&pot.output);
+  scanner.control_input.plugIn(&encoder.output);
   //scanner.control_input.plugIn(&lfo.output[LFO::UP_SAW]);
 
 
@@ -54,6 +56,7 @@ void setup()
   //dac1.input.plugIn(&trap.output);
 
   dac2.input.plugIn(&lfo.output[LFO::UP_SAW]);
+  //dac2.input.plugIn(&encoder.output);
 }
 
 void loop()
@@ -62,7 +65,7 @@ void loop()
   {
     last_tick = micros();
 
-    trap.process();
+    encoder.process();
 
     lfo.tick();
     lfo.process();
