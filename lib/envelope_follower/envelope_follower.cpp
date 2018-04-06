@@ -28,12 +28,8 @@ void Envelope_Follower::tick()
 
 void Envelope_Follower::process()
 {
-  if (fwr.input.isPluggedIn())
-    fwr.process();
-
-  if (decay_control.isPluggedIn())
-    decay_control.process();
-
+  fwr.process();
+  decay_control.process();
   lpf.process();
 
   output.set(lpf.output.get());

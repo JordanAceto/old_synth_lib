@@ -8,14 +8,12 @@ uint32_t last_tick;
 
 Rotary_Encoder encoder(15, 14);
 
-Five_Input_Scanner scanner;
 LFO lfo;
-White_Noise_Generator noise;
 
-Trapezoid_Generator trap;
+ADSR adsr;
 
-Arduino_Analog_Input pot(A8);
-Arduino_Analog_Input pot2(A9);
+Arduino_Analog_Input pot1(A9);
+Arduino_Analog_Input pot2(A8);
 
 Arduino_Analog_Output dac1(A21);
 Arduino_Analog_Output dac2(A22);
@@ -27,35 +25,22 @@ void setup()
   analogReadResolution(num_DAC_bits);
 
   lfo.setSampleRate(sample_rate);
-  lfo.setFrequency(100.0);
+  adsr.setSampleRate(sample_rate);
 
-  lfo.frequency_input.plugIn(&pot2.output);
-  lfo.frequency_input.unplug();
-  lfo.frequency_input.plugIn(-0.5);
-  lfo.frequency_input.unplug();
+  adsr.gate_input.plugIn(&lfo.output[LFO::SQUARE]);
 
-  scanner.signal.input[Mixer::INPUT_1].plugIn(&lfo.output[LFO::TRIANGLE]);
-  scanner.signal.input[Mixer::INPUT_2].plugIn(&lfo.output[LFO::SINE]);
-  scanner.signal.input[Mixer::INPUT_3].plugIn(&lfo.output[LFO::SQUARE]);
-  scanner.signal.input[Mixer::INPUT_4].plugIn(&lfo.output[LFO::RANDOM]);
-  scanner.signal.input[Mixer::INPUT_5].plugIn(&noise.output);
-  scanner.control_input.plugIn(&pot.output);
-  scanner.control_input.unplug();
-  scanner.control_input.plugIn(&encoder.output);
-  //scanner.control_input.plugIn(&lfo.output[LFO::UP_SAW]);
+  adsr.input[ADSR_INPUT::ATTACK_TIME].plugIn(&pot1.output);
+  adsr.input[ADSR_INPUT::DECAY_TIME].plugIn(&pot2.output);
+  adsr.input[ADSR_INPUT::SUSTAIN_LEVEL].plugIn(0.0);
+  adsr.input[ADSR_INPUT::RELEASE_TIME].plugIn(&pot2.output);
 
-
-  trap.input.plugIn(&lfo.output[LFO::UP_SAW]);
-  trap.setCenter(0.5);
-  trap.setWidth(0.03);
-  trap.setSlope(10.0);
-
+  lfo.frequency_input.plugIn(&encoder.output);
 
   dac1.input.plugIn(&lfo.output[LFO::SINE]);
-  dac1.input.plugIn(&scanner.output);
+  dac1.input.plugIn(&adsr.output);
   //dac1.input.plugIn(&trap.output);
 
-  dac2.input.plugIn(&lfo.output[LFO::UP_SAW]);
+  dac2.input.plugIn(&lfo.output[LFO::SQUARE]);
   //dac2.input.plugIn(&encoder.output);
 }
 
@@ -69,10 +54,13 @@ void loop()
 
     lfo.tick();
     lfo.process();
-    noise.process();
-    pot.process();
+
+    adsr.tick();
+    adsr.process();
+
+    pot1.process();
     pot2.process();
-    scanner.process();
+
     dac1.process();
     dac2.process();
   }

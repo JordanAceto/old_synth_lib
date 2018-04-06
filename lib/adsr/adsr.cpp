@@ -164,11 +164,11 @@ void ADSR_Core::printDecayTable() const
     }
 }
 
-ADSR::ADSR()
+ADSR::ADSR() : input { -0.9995, -0.95, 0.0, -0.95 } // magic numbers set adsr to reasonable start points
 {
   for (auto &in : input)
   {
-    in.setGain(0.5);
+    in.setGain(0.5);  // set the inputs to cover the range of -1.0 to +1.0
     in.setOffset(0.5);
   }
 }
@@ -189,19 +189,10 @@ void ADSR::tick()
 
 void ADSR::process()
 {
-  if (input[ADSR_INPUT::ATTACK_TIME].isPluggedIn())
     core.set(ADSR_INPUT::ATTACK_TIME, input[ADSR_INPUT::ATTACK_TIME].get() * overall_time);
-
-  if (input[ADSR_INPUT::DECAY_TIME].isPluggedIn())
     core.set(ADSR_INPUT::DECAY_TIME, input[ADSR_INPUT::DECAY_TIME].get() * overall_time);
-
-  if (input[ADSR_INPUT::SUSTAIN_LEVEL].isPluggedIn())
     core.set(ADSR_INPUT::SUSTAIN_LEVEL, input[ADSR_INPUT::SUSTAIN_LEVEL].get());
-
-  if (input[ADSR_INPUT::RELEASE_TIME].isPluggedIn())
     core.set(ADSR_INPUT::RELEASE_TIME, input[ADSR_INPUT::RELEASE_TIME].get() * overall_time);
-
-  if (input[ADSR_INPUT::OVERALL_TIME].isPluggedIn())
     overall_time = input[ADSR_INPUT::OVERALL_TIME].get() * 19.0 + 1.0;
 
   core.process();

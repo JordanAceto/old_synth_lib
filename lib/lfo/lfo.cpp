@@ -21,11 +21,8 @@ LFO::~LFO()
 
 void LFO::process()
 {
-  if (frequency_input.isPluggedIn())
-  {
-    frequency_input.process();
-    setFrequency(frequency_input.get() * 300 + 0.01);
-  }
+  frequency_input.process();
+  setFrequency(frequency_input.get() * 300 + 0.01);
 
   if (sync_input.isPluggedIn())
   {

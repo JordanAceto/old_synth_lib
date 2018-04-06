@@ -1,30 +1,39 @@
 #include "input_output_interface.hpp"
 
+Input_Interface::Input_Interface()
+{
+  dummy_input = new Output_Interface;
+  dummy_input->set(0.0);
+  this->input = dummy_input;
+}
+
+Input_Interface::Input_Interface(float initial_value)
+{
+  dummy_input = new Output_Interface;
+  dummy_input->set(initial_value);
+  this->input = dummy_input;
+}
+
 void Input_Interface::plugIn(const Output_Interface *input)
 {
   this->input = input;
-  dummy_input = false;
 }
 
 void Input_Interface::plugIn(float dummy_value)
  {
-  input = new Output_Interface(dummy_value);
-  dummy_input = true;
+   dummy_input->set(dummy_value);
+   this->input = dummy_input;
 }
 
 void Input_Interface::unplug()
 {
-   if (dummy_input)
-     delete input;
-   input = nullptr;
+  dummy_input->set(input->get());
+  this->input = dummy_input;
 }
 
 float Signal_Input::get() const
 {
-  if (isPluggedIn())
-    return input->get() * gain + offset;
-  else
-    return 0.0;
+  return input->get() * gain + offset;
 }
 
 float Gate_Input::get() const
@@ -64,8 +73,7 @@ bool Gate_Input::fallingEdge()
 
 void Signal_Input_Feedthrough::process()
 {
-  if (isPluggedIn())
-    output.set(get());
+  output.set(get());
 }
 
 void Arduino_Digital_Input::process()
@@ -89,6 +97,5 @@ void Arduino_Digital_Output::process()
 
 void Arduino_Analog_Output::process()
 {
-  if (input.isPluggedIn())
-    analogWrite(pin_number, (input.get() + 1.0) * float(1 << (num_DAC_bits - 1)));
+  analogWrite(pin_number, (input.get() + 1.0) * float(1 << (num_DAC_bits - 1)));
 }

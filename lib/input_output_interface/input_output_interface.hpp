@@ -23,22 +23,26 @@ protected:
 class Input_Interface : public Is_Processable
 {
 public:
+  Input_Interface();
+  Input_Interface(float initial_value);
+
   virtual void plugIn(const Output_Interface *input);
   virtual void plugIn(float dummy_value);
   virtual void unplug();
-  bool isPluggedIn() const { return input != nullptr; }
 
   virtual void process() override {}
   virtual float get() const = 0;
 
 protected:
-  bool dummy_input;
-  const Output_Interface *input = nullptr;
+  const Output_Interface *input;
+  Output_Interface *dummy_input;
 };
 
 class Signal_Input : public Input_Interface
 {
 public:
+  Signal_Input() {}
+  Signal_Input(float initial_value) : Input_Interface(initial_value) {}
   virtual float get() const override;
   virtual void setGain(float gain) { this->gain = clamp(gain); }
   virtual void setOffset(float offset) { this->offset = clamp(offset); }
@@ -55,6 +59,7 @@ public:
   void process() override;
   bool risingEdge();
   bool fallingEdge();
+  bool isPluggedIn() const { return input != nullptr; }
 
 private:
   const float threshold = 0.5, hysteresis = 0.3;
@@ -138,6 +143,11 @@ public:
       encoder.write(-max_counts);
 
     output.set(encoder.read() / max_counts);
+  }
+
+  void set(float new_value)
+  {
+    encoder.write(new_value * max_counts);
   }
 
   Output_Interface output;
