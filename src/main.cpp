@@ -28,12 +28,17 @@ void setup()
   lfo.setFrequency(100.0);
 
   lfo.frequency_input.plugIn(&pot2.output);
+  lfo.frequency_input.unplug();
+  lfo.frequency_input.plugIn(-0.5);
+  lfo.frequency_input.unplug();
 
   scanner.signal.input[Mixer::INPUT_1].plugIn(&lfo.output[LFO::TRIANGLE]);
   scanner.signal.input[Mixer::INPUT_2].plugIn(&lfo.output[LFO::SINE]);
   scanner.signal.input[Mixer::INPUT_3].plugIn(&lfo.output[LFO::SQUARE]);
   scanner.signal.input[Mixer::INPUT_4].plugIn(&lfo.output[LFO::RANDOM]);
   scanner.signal.input[Mixer::INPUT_5].plugIn(&noise.output);
+  scanner.control_input.plugIn(&pot.output);
+  scanner.control_input.unplug();
   scanner.control_input.plugIn(&pot.output);
   //scanner.control_input.plugIn(&lfo.output[LFO::UP_SAW]);
 

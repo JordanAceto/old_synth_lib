@@ -8,6 +8,10 @@
 class Output_Interface
 {
 public:
+  Output_Interface() {}
+  Output_Interface(float val) : value(val) {}
+  virtual ~Output_Interface() {}
+
   virtual float get() const { return value; };
   virtual void set(float value) { this->value = value; }
 protected:
@@ -17,21 +21,16 @@ protected:
 class Input_Interface : public Is_Processable
 {
 public:
-  virtual void plugIn(const Output_Interface *input) { this->input = input;}
-  /*
-  virtual void plugIn(float fixed_value) // I'd like to do something like this.
-   {
-    input = new Output_Interface;       // but I need to think about how to
-    input.set(value);                   // manage the memory when it's unplugged
-  }
-  */
-  virtual void unplug() { input = nullptr; }
+  virtual void plugIn(const Output_Interface *input);
+  virtual void plugIn(float dummy_value);
+  virtual void unplug();
   bool isPluggedIn() const { return input != nullptr; }
 
   virtual void process() override {}
   virtual float get() const = 0;
 
 protected:
+  bool dummy_input;
   const Output_Interface *input = nullptr;
 };
 

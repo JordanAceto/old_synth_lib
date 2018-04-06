@@ -1,5 +1,24 @@
 #include "input_output_interface.hpp"
 
+void Input_Interface::plugIn(const Output_Interface *input)
+{
+  this->input = input;
+  dummy_input = false;
+}
+
+void Input_Interface::plugIn(float dummy_value)
+ {
+  input = new Output_Interface(dummy_value);
+  dummy_input = true;
+}
+
+void Input_Interface::unplug()
+{
+   if (dummy_input)
+     delete input;
+   input = nullptr;
+}
+
 float Signal_Input::get() const
 {
   if (isPluggedIn())
