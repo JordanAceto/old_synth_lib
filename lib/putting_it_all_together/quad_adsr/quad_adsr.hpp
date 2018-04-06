@@ -4,7 +4,30 @@
 #include "synth_library.hpp"
 #include "global_constants.hpp"
 
-#include <Arduino.h>
+/*
+
+Quad ADSR module to be installed on a teensy 3.2. If using a different
+microcontroller change the input and output pins as needed.
+
+Module consists of four individual ADSR's, each with their own gate and
+trigger inputs and analog outputs, but only one set of four analog
+attack/decay/sustain/release controls which are shared between them.
+
+The controls can be shared between all four ADSR cores, or assigned to
+individual ADSR's.
+
+This is a work in progress. As of now, when you switch the controls from one
+ADSR to another, the one you switched from remembers its last control settigns
+and keeps them until the controls are reassigned to it. This is fine. The ADSR
+you switch the controls to however immediately takes on the value of the
+controls, which is less ideal. Better behavior would be to keep the value it
+was until you adjust the controls enough to "catch up" to where it was. This
+will require some thought, and will be useful/necessary for other modules as
+well.
+
+For now, this is here as an idea of one application of this library.
+
+*/
 
 class Quad_ADSR : public Is_Tickable, public Is_Processable
 {
@@ -26,6 +49,7 @@ public:
   };
 
   void assignPotsTo(ADSR_CHANNEL new_channel);
+  void assignPotsToAll();
 
 private:
   int active_channel, last_channel;

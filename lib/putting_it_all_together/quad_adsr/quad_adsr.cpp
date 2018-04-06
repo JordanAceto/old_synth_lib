@@ -54,3 +54,14 @@ void Quad_ADSR::assignPotsTo(ADSR_CHANNEL new_channel)
   adsr[active_channel].input[ADSR_INPUT::SUSTAIN_LEVEL].plugIn(&pot[SUSTAIN_POT].output);
   adsr[active_channel].input[ADSR_INPUT::RELEASE_TIME].plugIn(&pot[RELEASE_POT].output);
 }
+
+void Quad_ADSR::assignPotsToAll()
+{
+  for (int channel = 0; channel < NUM_ADSR_CHANNELS; channel ++)
+  {
+    adsr[channel].input[ADSR_INPUT::ATTACK_TIME].plugIn(&pot[ATTACK_POT].output);
+    adsr[channel].input[ADSR_INPUT::DECAY_TIME].plugIn(&pot[DECAY_POT].output);
+    adsr[channel].input[ADSR_INPUT::SUSTAIN_LEVEL].plugIn(&pot[SUSTAIN_POT].output);
+    adsr[channel].input[ADSR_INPUT::RELEASE_TIME].plugIn(&pot[RELEASE_POT].output);
+  }
+}

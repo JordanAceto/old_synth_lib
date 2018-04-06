@@ -4,6 +4,23 @@
 #include "synth_library.hpp"
 #include "global_constants.hpp"
 
+/*
+
+Unfinished concept for modulation controls for a digitally controlled analog
+filter. This general setup is similar to what I've used in the past, but this
+time implemented digitally.
+
+Basic idea: flexible LFO with various shapes and an envelope follower which can
+sweep up and down.
+
+The LFO concept is taken from Jurgen Haible's variable slope filter/phaser
+project.
+
+This is an unfinished work in progress.
+For now, this is here as an idea of one application of this library.
+
+*/
+
 class Mono_VCF_Control : public Is_Tickable, public Is_Processable
 {
 public:
