@@ -8,12 +8,14 @@
 #include "base_classes.hpp"
 #include "utilities.hpp"
 
-class LFO : public Phase_Accumulator, public Is_Processable
+class LFO : public Is_Tickable, public Is_Processable
 {
 public:
   LFO();
   ~LFO();
 
+  void setSampleRate(float sample_rate) override;
+  void tick() override;
   void process() override;
 
   enum LFO_Shape
@@ -34,6 +36,7 @@ public:
   Output_Interface output[NUM_LFO_SHAPES];
 
 private:
+  Phase_Accumulator core;
   Waveshaper_Interface *waveshape[NUM_LFO_SHAPES];
 };
 

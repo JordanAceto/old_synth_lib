@@ -24,8 +24,8 @@ For now, this is here as an idea of one application of this library.
 class Mono_VCF_Control : public Is_Tickable, public Is_Processable
 {
 public:
-  Mono_VCF_Control() : encoder { {24, 25},  {26, 27}, {28, 28} },
-                       output_dac { A14, 9, 10 }
+  Mono_VCF_Control() : encoder { {24, 25},  {26, 27}, {28, 28} }, // hardwired
+                       output_dac { A14, 9, 10 }                  // io pins, eek
   {
     analogWriteRes(num_ADC_bits);
     analogReadResolution(num_DAC_bits);

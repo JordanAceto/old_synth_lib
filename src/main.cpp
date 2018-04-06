@@ -10,7 +10,7 @@ Mono_VCF_Control vcf_controller;
 
 Rotary_Encoder encoder(15, 14);
 
-LFO lfo;
+Clock_Generator lfo;
 
 ADSR adsr;
 
@@ -29,20 +29,22 @@ void setup()
   lfo.setSampleRate(sample_rate);
   adsr.setSampleRate(sample_rate);
 
-  adsr.gate_input.plugIn(&lfo.output[LFO::SQUARE]);
+  lfo.gate_length_input.plugIn(&pot1.output);
 
-  adsr.input[ADSR_INPUT::ATTACK_TIME].plugIn(&pot1.output);
+  adsr.gate_input.plugIn(&lfo.output);
+
+  //adsr.input[ADSR_INPUT::ATTACK_TIME].plugIn(&pot1.output);
   adsr.input[ADSR_INPUT::DECAY_TIME].plugIn(&pot2.output);
   adsr.input[ADSR_INPUT::SUSTAIN_LEVEL].plugIn(0.0);
   adsr.input[ADSR_INPUT::RELEASE_TIME].plugIn(&pot2.output);
 
   lfo.frequency_input.plugIn(&encoder.output);
 
-  dac1.input.plugIn(&lfo.output[LFO::SINE]);
+  dac1.input.plugIn(&lfo.output);
   dac1.input.plugIn(&adsr.output);
   //dac1.input.plugIn(&trap.output);
 
-  dac2.input.plugIn(&lfo.output[LFO::SQUARE]);
+  dac2.input.plugIn(&lfo.output);
   //dac2.input.plugIn(&encoder.output);
 }
 

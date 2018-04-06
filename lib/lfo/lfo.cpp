@@ -19,18 +19,28 @@ LFO::~LFO()
     delete shape;
 }
 
+void LFO::setSampleRate(float sample_rate)
+{
+  core.setSampleRate(sample_rate);
+}
+
+void LFO::tick()
+{
+  core.tick();
+}
+
 void LFO::process()
 {
   frequency_input.process();
-  setFrequency(frequency_input.get() * 300 + 0.01);
+  core.setFrequency(frequency_input.get() * 300 + 0.01);
 
   if (sync_input.isPluggedIn())
   {
     sync_input.process();
     if (sync_input.risingEdge())
-      reset();
+      core.reset();
   }
 
   for (int shape = 0; shape < NUM_LFO_SHAPES; shape ++)
-    output[shape].set(waveshape[shape]->process(*this));
+    output[shape].set(waveshape[shape]->process(core));
 }

@@ -12,7 +12,7 @@ public:
   Envelope_Follower();
 
   void setSampleRate(float sample_rate);
-  
+
   Full_Wave_Rectifier fwr;
   Signal_Input_Feedthrough decay_control;
   Output_Interface output;

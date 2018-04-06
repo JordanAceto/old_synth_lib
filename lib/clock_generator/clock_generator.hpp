@@ -4,18 +4,23 @@
 #include "phase_accumulator.hpp"
 #include "input_output_interface.hpp"
 
-class Clock_Generator : public Phase_Accumulator, public Is_Processable
+class Clock_Generator : public Is_Tickable, public Is_Processable
 {
 public:
-  bool gateIsHigh() const;
-
-  void setGateLength(float percent);
-
+  Clock_Generator();
+  
+  void setSampleRate(float sample_rate) override;
+  void tick() override;
   void process() override;
 
-  Output_Interface output;
+  bool gateIsHigh() const;
+  void setGateLength(float percent);
 
+  Signal_Input frequency_input;
+  Signal_Input gate_length_input;
+  Output_Interface output;
 private:
+  Phase_Accumulator core;
   float gate_length;
 
 };
