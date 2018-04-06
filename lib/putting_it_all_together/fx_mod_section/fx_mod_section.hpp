@@ -8,7 +8,7 @@
 
 Unfinished concept for modulation controls for a digitally controlled analog
 filter. This general setup is similar to what I've used in the past, but this
-time implemented digitally.
+time implemented digitally using a teensy 3.6.
 
 Basic idea: flexible LFO with various shapes and an envelope follower which can
 sweep up and down.
@@ -24,12 +24,11 @@ For now, this is here as an idea of one application of this library.
 class Mono_VCF_Control : public Is_Tickable, public Is_Processable
 {
 public:
-  Mono_VCF_Control()
+  Mono_VCF_Control() : encoder { {24, 25},  {26, 27}, {28, 28} },
+                       output_dac { A14, 9, 10 }
   {
     analogWriteRes(num_ADC_bits);
     analogReadResolution(num_DAC_bits);
-
-    lfo.frequency_input.plugIn(&control_input[LFO_RATE].output);
 
     lfo_wave_scanner.signal.input[0].plugIn(&lfo.output[LFO::TRIANGLE]);
     lfo_wave_scanner.signal.input[1].plugIn(&lfo.output[LFO::SINE]);
@@ -37,25 +36,15 @@ public:
     lfo_wave_scanner.signal.input[3].plugIn(&lfo.output[LFO::RANDOM]);
     lfo_wave_scanner.signal.input[4].plugIn(&noise.output);
 
-    lfo_wave_scanner.control_input.plugIn(&control_input[LFO_WAVE].output);
-
     lfo_output_vca.signal_input.plugIn(&lfo_wave_scanner.output);
-    lfo_output_vca.control_input.plugIn(&control_input[LFO_LEVEL].output);
 
-    ef_input_vca.signal_input.plugIn(&control_input[EF_SIGNAL_INPUT].output);
-    ef_input_vca.control_input.plugIn(&control_input[EF_SENSITIVITY].output);
     ef.fwr.input.plugIn(&ef_input_vca.output);
-    ef.decay_control.plugIn(&control_input[EF_ATTACK].output);
     ef_attenuverter.x_input.plugIn(&ef.output);
-    ef_attenuverter.y_input.plugIn(&control_input[EF_LEVEL].output);
 
-    mixer.input[Mixer::INPUT_1].plugIn(&control_input[INITIAL_FREQUENCY].output);
     mixer.input[Mixer::INPUT_2].plugIn(&lfo_wave_scanner.output);
     mixer.input[Mixer::INPUT_3].plugIn(&ef_attenuverter.output);
 
     output_dac[MAIN_CONTROL_DAC].input.plugIn(&mixer.output);
-    output_dac[RESONANCE_DAC].input.plugIn(&control_input[RESONANCE].output);
-    output_dac[WET_DRY_MIX_DAC].input.plugIn(&control_input[WET_DRY_MIX].output);
   }
 
   void setSampleRate(float sample_rate) override
@@ -72,8 +61,8 @@ public:
 
   void process() override
   {
-    for (auto &input : control_input)
-      input.process();
+    for (auto &enc : encoder)
+      enc.process();
 
     for (auto &dac : output_dac)
       dac.process();
@@ -109,20 +98,75 @@ public:
     NUM_CONTROL_INPUTS
   };
 
-private:
-  Arduino_Analog_Input control_input[NUM_CONTROL_INPUTS] =
+  enum CONTROL_PAGE
   {
-    Arduino_Analog_Input(A0),
-    Arduino_Analog_Input(A1),
-    Arduino_Analog_Input(A2),
-    Arduino_Analog_Input(A3),
-    Arduino_Analog_Input(A4),
-    Arduino_Analog_Input(A5),
-    Arduino_Analog_Input(A6),
-    Arduino_Analog_Input(A7),
-    Arduino_Analog_Input(A8),
-    Arduino_Analog_Input(A9)
+    GLOBAL_SETTINGS,
+    LFO_SETTINGS,
+    EF_SETTINGS,
+
+    NUM_PAGES
   };
+
+  enum Encoders
+  {
+    ENCODER_1,
+    ENCODER_2,
+    ENCODER_3,
+
+    NUM_ENCODERS
+  };
+
+  void setActivePage(CONTROL_PAGE page)
+  {
+    mixer.input[Mixer::INPUT_1].unplug();
+    output_dac[RESONANCE_DAC].input.unplug();
+    output_dac[WET_DRY_MIX_DAC].input.unplug();
+
+    lfo.frequency_input.unplug();
+    lfo_wave_scanner.control_input.unplug();
+    lfo_output_vca.control_input.unplug();
+
+    ef_input_vca.control_input.unplug();
+    ef.decay_control.unplug();
+    ef_attenuverter.y_input.unplug();
+
+    switch (page)
+    {
+      case GLOBAL_SETTINGS :
+        encoder[ENCODER_1].set(mixer.input[Mixer::INPUT_1].get());
+        encoder[ENCODER_2].set(output_dac[RESONANCE_DAC].input.get());
+        encoder[ENCODER_3].set(output_dac[WET_DRY_MIX].input.get());
+        mixer.input[Mixer::INPUT_1].plugIn(&encoder[ENCODER_1].output);
+        output_dac[RESONANCE_DAC].input.plugIn(&encoder[ENCODER_2].output);
+        output_dac[WET_DRY_MIX_DAC].input.plugIn(&encoder[ENCODER_3].output);
+        break;
+
+      case LFO_SETTINGS :
+        encoder[ENCODER_1].set(lfo.frequency_input.get());
+        encoder[ENCODER_2].set(lfo_wave_scanner.control_input.get());
+        encoder[ENCODER_3].set(lfo_output_vca.control_input.get());
+        lfo.frequency_input.plugIn(&encoder[ENCODER_1].output);
+        lfo_wave_scanner.control_input.plugIn(&encoder[ENCODER_2].output);
+        lfo_output_vca.control_input.plugIn(&encoder[ENCODER_3].output);
+        break;
+
+      case EF_SETTINGS :
+        encoder[ENCODER_1].set(ef_input_vca.control_input.get());
+        encoder[ENCODER_2].set(ef.decay_control.get());
+        encoder[ENCODER_3].set(ef_attenuverter.y_input.get());
+        ef_input_vca.control_input.plugIn(&encoder[ENCODER_1].output);
+        ef.decay_control.plugIn(&encoder[ENCODER_2].output);
+        ef_attenuverter.y_input.plugIn(&encoder[ENCODER_3].output);
+        break;
+
+      default :
+        break;
+    }
+  }
+
+private:
+
+  Rotary_Encoder encoder[NUM_ENCODERS];
 
   LFO lfo;
   White_Noise_Generator noise;
@@ -144,12 +188,7 @@ private:
     NUM_OUTPUT_DACS
   };
 
-  Arduino_Analog_Output output_dac[NUM_OUTPUT_DACS] =
-  {
-    Arduino_Analog_Output(A14),
-    Arduino_Analog_Output(9),
-    Arduino_Analog_Output(10)
-  };
+  Arduino_Analog_Output output_dac[NUM_OUTPUT_DACS];
 };
 
 #endif

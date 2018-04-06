@@ -2,15 +2,13 @@
 
 Input_Interface::Input_Interface()
 {
-  dummy_input = new Output_Interface;
-  dummy_input->set(0.0);
+  dummy_input = new Output_Interface(0.0);
   this->input = dummy_input;
 }
 
 Input_Interface::Input_Interface(float initial_value)
 {
-  dummy_input = new Output_Interface;
-  dummy_input->set(initial_value);
+  dummy_input = new Output_Interface(initial_value);
   this->input = dummy_input;
 }
 

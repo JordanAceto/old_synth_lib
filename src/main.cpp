@@ -6,6 +6,8 @@
 const uint32_t sample_period_in_micros = 1000000.0 / sample_rate;
 uint32_t last_tick;
 
+Mono_VCF_Control vcf_controller;
+
 Rotary_Encoder encoder(15, 14);
 
 LFO lfo;
