@@ -21,7 +21,7 @@ public:
   void process() override;
 
 private:
-  One_Pole_Lowpass_Filter lpf;
+  One_Pole_Lowpass lpf;
 
   float peak;
 };

@@ -1,17 +1,6 @@
 #include "filters.hpp"
 
-void One_Pole_Lowpass_Filter::tick()
-{
-  sample += cutoff * (input.get() - sample);
-}
-
-void One_Pole_Lowpass_Filter::process()
-{
-  cutoff = clamp(cutoff_input.get(), 0.0001, 0.999999999);
-  output.set(sample);
-}
-
-Four_Pole_Lowpass_Filter::Four_Pole_Lowpass_Filter()
+Four_Pole_Lowpass::Four_Pole_Lowpass()
 {
   stage[0].input.plugIn(&input.output);
 
@@ -22,13 +11,13 @@ Four_Pole_Lowpass_Filter::Four_Pole_Lowpass_Filter()
     s.cutoff_input.plugIn(&cutoff_input.output);
 }
 
-void Four_Pole_Lowpass_Filter::tick()
+void Four_Pole_Lowpass::tick()
 {
   for (auto &s : stage)
     s.tick();
 }
 
-void Four_Pole_Lowpass_Filter::process()
+void Four_Pole_Lowpass::process()
 {
   input.process();
   cutoff_input.process();
