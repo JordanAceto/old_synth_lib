@@ -25,6 +25,11 @@ Arduino_Analog_Output dac2(A22);
 void setup()
 {
   //Serial.begin(38400); while (!Serial) {}
+
+
+
+
+
   analogWriteRes(num_ADC_bits);
   analogReadResolution(num_DAC_bits);
 
@@ -33,6 +38,8 @@ void setup()
   adsr.setSampleRate(sample_rate);
 
   //lfo.gate_length_input.plugIn(&pot1.output);
+
+  lfo.setFrequencyRange(1.0, 50.0);
 
   adsr.gate_input.plugIn(&lfo.output[LFO::SQUARE]);
 

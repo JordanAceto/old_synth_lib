@@ -15,6 +15,8 @@ double clamp(double x, double min, double max);
 
 float clamp(float x);
 
+float mapInput(float input, float output_for_neg_one, float output_for_pos_one);
+
 float bipolarToUnipolar(float);
 float unipolarToBipolar(float);
 

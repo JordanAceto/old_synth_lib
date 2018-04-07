@@ -17,5 +17,18 @@ public:
   virtual void process() = 0;
 };
 
+class Has_Frequency_Range
+{
+public:
+  virtual void setFrequencyRange(float F1, float F2)
+  {
+    this->F1 = F1;
+    this->F2 = F2;
+  }
+
+protected:
+  float F1, F2;
+};
+
 
 #endif

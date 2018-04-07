@@ -8,9 +8,6 @@ LFO::LFO()
   waveshape[DOWN_SAW] = new Naive_Down_Saw_Shaper;
   waveshape[SQUARE]   = new Naive_Square_Shaper;
   waveshape[RANDOM]   = new Random_Shaper;
-
-  frequency_input.setGain(0.5);
-  frequency_input.setOffset(0.5);
 }
 
 LFO::~LFO()
@@ -32,7 +29,7 @@ void LFO::tick()
 void LFO::process()
 {
   frequency_input.process();
-  core.setFrequency(frequency_input.get() * 300 + 0.01);
+  core.setFrequency(mapInput(frequency_input.get(), F1, F2));
 
   if (sync_input.isPluggedIn())
   {

@@ -8,7 +8,7 @@
 #include "base_classes.hpp"
 #include "utilities.hpp"
 
-class LFO : public Is_Tickable, public Is_Processable
+class LFO : public Is_Tickable, public Is_Processable, public Has_Frequency_Range
 {
 public:
   LFO();

@@ -20,6 +20,15 @@ float clamp(float x)
   return (x < -1.0) ? -1.0 : (x > 1.0) ? 1.0 : x;
 }
 
+float mapInput(float input, float output_for_neg_one, float output_for_pos_one)
+{
+  static const float input_range = 2.0;
+  static const float input_offset = -1.0;
+  const float output_range = output_for_pos_one - output_for_neg_one;
+
+  return (input - input_offset)  * output_range / input_range + output_for_neg_one;
+}
+
 void swap(int &x, int &y)
 {
     int temp = x;
