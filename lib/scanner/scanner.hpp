@@ -1,7 +1,7 @@
 #ifndef SCANNER_H_INCLUDED
 #define SCANNER_H_INCLUDED
 
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 #include "utilities.hpp"
 #include "helper_functions.hpp"
 

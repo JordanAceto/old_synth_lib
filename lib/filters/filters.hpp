@@ -1,7 +1,7 @@
 #ifndef FILTERS_H_INCLUDED
 #define FILTERS_H_INCLUDED
 
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 #include "base_classes.hpp"
 
 #include <math.h>

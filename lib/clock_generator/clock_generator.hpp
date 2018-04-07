@@ -2,13 +2,13 @@
 #define CLOCK_GENERATOR_H_INCLUDED
 
 #include "phase_accumulator.hpp"
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 
 class Clock_Generator : public Is_Tickable, public Is_Processable
 {
 public:
   Clock_Generator();
-  
+
   void setSampleRate(float sample_rate) override;
   void tick() override;
   void process() override;

@@ -4,7 +4,7 @@
 #include "lfo.hpp"
 #include "adsr.hpp"
 #include "helper_functions.hpp"
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 #include "clock_generator.hpp"
 #include "noise_source.hpp"
 #include "multipliers.hpp"

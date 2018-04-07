@@ -4,7 +4,7 @@
 #include "phase_accumulator.hpp"
 #include "wave_shapers.hpp"
 #include "helper_functions.hpp"
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 #include "base_classes.hpp"
 #include "utilities.hpp"
 

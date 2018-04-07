@@ -1,7 +1,7 @@
 #ifndef MULTIPLIERS_H_INCLUDED
 #define MULTIPLIERS_H_INCLUDED
 
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 
 class Two_Quadrant_Multiplier : public Is_Processable
 {

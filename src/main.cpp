@@ -39,8 +39,6 @@ void setup()
   lfo.setSampleRate(g_sample_rate);
   adsr.setSampleRate(g_sample_rate);
 
-  //lfo.gate_length_input.plugIn(&pot1.output);
-
   lfo.setFrequencyRange(0.5, 10.0);
 
   lpf.setFrequencyRange(0.01, 10.0);

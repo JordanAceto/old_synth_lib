@@ -1,7 +1,7 @@
 #ifndef NOISE_SOURCE_H_INCLUDED
 #define NOISE_SOURCE_H_INCLUDED
 
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 
 class White_Noise_Generator : public Is_Processable
 {

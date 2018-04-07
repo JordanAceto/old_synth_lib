@@ -2,7 +2,7 @@
 #define ADSR_H_INCLUDED
 
 #include "phase_accumulator.hpp"
-#include "input_output_interface.hpp"
+#include "inputs_and_outputs.hpp"
 #include "helper_functions.hpp"
 #include "base_classes.hpp"
 #include "utilities.hpp"

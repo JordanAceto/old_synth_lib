@@ -180,10 +180,10 @@ void ADSR::tick()
 
 void ADSR::process()
 {
-  core.set(ADSR_INPUT::ATTACK_TIME, mapInput(input[ADSR_INPUT::ATTACK_TIME].get(), 0.001, 10));
-  core.set(ADSR_INPUT::DECAY_TIME, mapInput(input[ADSR_INPUT::DECAY_TIME].get(), 0.001, 10));
+  core.set(ADSR_INPUT::ATTACK_TIME, mapInput(input[ADSR_INPUT::ATTACK_TIME].get(), 0.001, 10.0));
+  core.set(ADSR_INPUT::DECAY_TIME, mapInput(input[ADSR_INPUT::DECAY_TIME].get(), 0.001, 10.0));
   core.set(ADSR_INPUT::SUSTAIN_LEVEL, mapInput(input[ADSR_INPUT::SUSTAIN_LEVEL].get(), 0.0, 1.0));
-  core.set(ADSR_INPUT::RELEASE_TIME, mapInput(input[ADSR_INPUT::RELEASE_TIME].get(), 0.001, 10));
+  core.set(ADSR_INPUT::RELEASE_TIME, mapInput(input[ADSR_INPUT::RELEASE_TIME].get(), 0.001, 10.0));
 
   overall_time = input[ADSR_INPUT::OVERALL_TIME].get() * 19.0 + 1.0;
 
