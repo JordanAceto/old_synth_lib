@@ -13,5 +13,6 @@
 #include "filters.hpp"
 #include "scanner.hpp"
 #include "global_constants.hpp"
+#include "bit_crusher.hpp"
 
 #endif

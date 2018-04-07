@@ -8,11 +8,15 @@ uint32_t last_tick;
 
 Four_Pole_Lowpass lpf;
 
+Bit_Crusher crusher;
+
 Mono_VCF_Control vcf_controller;
 
 Rotary_Encoder encoder(15, 14);
 
 LFO lfo;
+
+Two_Quadrant_Multiplier vca;
 
 ADSR adsr;
 
@@ -30,16 +34,22 @@ void setup()
 
 
 
-
-
   analogWriteRes(g_num_ADC_bits);
   analogReadResolution(g_num_DAC_bits);
+
+  vca.signal_input.plugIn(&lfo.output[LFO::SINE]);
+  vca.control_input.plugIn(&pot3.output);
+
+  crusher.input.plugIn(&vca.output);
+  //crusher.input.plugIn(&pot2.output);
+  crusher.crush_input.plugIn(&pot1.output);
+
 
   lpf.setSampleRate(g_sample_rate);
   lfo.setSampleRate(g_sample_rate);
   adsr.setSampleRate(g_sample_rate);
 
-  lfo.setFrequencyRange(0.5, 10.0);
+  lfo.setFrequencyRange(20.0, 50.0);
 
   lpf.setFrequencyRange(0.01, 10.0);
 
@@ -59,7 +69,7 @@ void setup()
   lpf.cutoff_input.plugIn(&encoder.output);
   lpf.input.plugIn(&lfo.output[LFO::SQUARE]);
   //dac2.input.plugIn(&lpf.output);
-  dac2.input.plugIn(&adsr.output);
+  dac2.input.plugIn(&crusher.output);
 }
 
 void loop()
@@ -72,6 +82,9 @@ void loop()
 
     //lpf.tick();
     //lpf.process();
+    vca.process();
+    
+    crusher.process();
 
     lfo.tick();
     lfo.process();
