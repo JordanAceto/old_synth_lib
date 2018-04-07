@@ -18,6 +18,8 @@ ADSR adsr;
 
 Arduino_Analog_Input pot1(A9);
 Arduino_Analog_Input pot2(A8);
+Arduino_Analog_Input pot3(A7);
+Arduino_Analog_Input pot4(A6);
 
 Arduino_Analog_Output dac1(A21);
 Arduino_Analog_Output dac2(A22);
@@ -39,18 +41,18 @@ void setup()
 
   //lfo.gate_length_input.plugIn(&pot1.output);
 
-  lfo.setFrequencyRange(5.0, 50.0);
+  lfo.setFrequencyRange(0.5, 10.0);
 
   lpf.setFrequencyRange(0.01, 10.0);
 
   adsr.gate_input.plugIn(&lfo.output[LFO::SQUARE]);
 
-  //adsr.input[ADSR_INPUT::ATTACK_TIME].plugIn(&pot1.output);
+  adsr.input[ADSR_INPUT::ATTACK_TIME].plugIn(&pot1.output);
   adsr.input[ADSR_INPUT::DECAY_TIME].plugIn(&pot2.output);
-  adsr.input[ADSR_INPUT::SUSTAIN_LEVEL].plugIn(0.0);
-  adsr.input[ADSR_INPUT::RELEASE_TIME].plugIn(&pot2.output);
+  adsr.input[ADSR_INPUT::SUSTAIN_LEVEL].plugIn(&pot3.output);
+  adsr.input[ADSR_INPUT::RELEASE_TIME].plugIn(&pot4.output);
 
-  lfo.frequency_input.plugIn(&pot1.output);
+  lfo.frequency_input.plugIn(&encoder.output);
 
   dac1.input.plugIn(&lfo.output[LFO::SQUARE]);
   //dac1.input.plugIn(&adsr.output);
@@ -58,8 +60,8 @@ void setup()
 
   lpf.cutoff_input.plugIn(&encoder.output);
   lpf.input.plugIn(&lfo.output[LFO::SQUARE]);
-  dac2.input.plugIn(&lpf.output);
-  //dac2.input.plugIn(&encoder.output);
+  //dac2.input.plugIn(&lpf.output);
+  dac2.input.plugIn(&adsr.output);
 }
 
 void loop()
@@ -70,8 +72,8 @@ void loop()
 
     encoder.process();
 
-    lpf.tick();
-    lpf.process();
+    //lpf.tick();
+    //lpf.process();
 
     lfo.tick();
     lfo.process();
@@ -81,6 +83,8 @@ void loop()
 
     pot1.process();
     pot2.process();
+    pot3.process();
+    pot4.process();
 
     dac1.process();
     dac2.process();

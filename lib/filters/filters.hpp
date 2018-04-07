@@ -17,7 +17,7 @@ public:
     a0 = 1.0 - b1;
   }
 
-  void tick() override  { z1 = input * a0 + z1 * b1; }//{ z1 += (input - z1) * a0; }
+  void tick() override { z1 += (input - z1) * a0; }
 
   void loadInput(float input) { this->input = input; }
   float getOutput() const { return z1; }

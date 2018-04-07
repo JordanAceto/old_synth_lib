@@ -83,8 +83,6 @@ private:
 class ADSR : public Is_Tickable, public Is_Processable
 {
 public:
-  ADSR();
-
   void setSampleRate(float sample_rate) override { core.setSampleRate(sample_rate); }
 
   void set(ADSR_INPUT::ADSR_INPUT input, float value) { core.set(input, value); }

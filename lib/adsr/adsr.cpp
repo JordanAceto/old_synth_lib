@@ -88,88 +88,79 @@ void ADSR_Core::gateOff()
 
 bool ADSR_Core::currentStateIsTickable() const
 {
-   return state == ATTACK || state == DECAY || state == RELEASE;
+  return state == ATTACK || state == DECAY || state == RELEASE;
 }
 
 float ADSR_Core::periodOf(ADSR_STATE state) const
 {
-    switch (state)
-    {
-        case ATTACK  : return attack_time;
-        case DECAY   : return decay_time;
-        case SUSTAIN : return INFINITY;
-        case RELEASE : return release_time;
-        case AT_REST : return INFINITY;
-        default      : return 0.001;
-    }
+  switch (state)
+  {
+    case ATTACK  : return attack_time;
+    case DECAY   : return decay_time;
+    case SUSTAIN : return INFINITY;
+    case RELEASE : return release_time;
+    case AT_REST : return INFINITY;
+    default      : return 0.001;
+  }
 }
 
 void ADSR_Core::advanceState()
 {
-    switch (state)
-    {
-        case ATTACK  : state = DECAY;   break;
-        case DECAY   : state = SUSTAIN; break;
-        case SUSTAIN : state = RELEASE; break;
-        case RELEASE : state = AT_REST; break;
-        case AT_REST : state = ATTACK;  break;
-        default      : state = AT_REST; break;
-    }
+  switch (state)
+  {
+    case ATTACK  : state = DECAY;   break;
+    case DECAY   : state = SUSTAIN; break;
+    case SUSTAIN : state = RELEASE; break;
+    case RELEASE : state = AT_REST; break;
+    case AT_REST : state = ATTACK;  break;
+    default      : state = AT_REST; break;
+  }
 }
 
 void ADSR_Core::fillAttackTable()
 {
-    const float target = 1.3;
-    const float decay_factor = 0.0057;
+  const float target = 1.3;
+  const float decay_factor = 0.0057;
 
-    attack_table[0] = 0;
+  attack_table[0] = 0;
 
-    for (int i = 1; i < table_length; i ++)
-        attack_table[i] = attack_table[i - 1] + (target - attack_table[i - 1]) * decay_factor;
+  for (int i = 1; i < table_length; i ++)
+    attack_table[i] = attack_table[i - 1] + (target - attack_table[i - 1]) * decay_factor;
 }
 
 void ADSR_Core::fillDecayTable()
 {
-    const float target = 1.0;
-    const float decay_factor = 0.03;
+  const float target = 1.0;
+  const float decay_factor = 0.03;
 
-    decay_table[0] = 0;
+  decay_table[0] = 0;
 
-    for (int i = 1; i < table_length; i ++)
-        decay_table[i] = decay_table[i - 1] + (target - decay_table[i - 1]) * decay_factor;
+  for (int i = 1; i < table_length; i ++)
+    decay_table[i] = decay_table[i - 1] + (target - decay_table[i - 1]) * decay_factor;
 
-    for (int i = 0; i < table_length; i ++)
-        decay_table[i] = 1.0 - decay_table[i];
+  for (int i = 0; i < table_length; i ++)
+    decay_table[i] = 1.0 - decay_table[i];
 }
 
 void ADSR_Core::printAttackTable() const
 {
-    for (int i = 1; i < table_length + 1; i ++)
-    {
-        Serial.print(attack_table[i - 1]);
-        Serial.print(", ");
-        if (i % 16 == 0)
-            Serial.println();
-    }
+  for (int i = 1; i < table_length + 1; i ++)
+  {
+    Serial.print(attack_table[i - 1]);
+    Serial.print(", ");
+    if (i % 16 == 0)
+      Serial.println();
+  }
 }
 
 void ADSR_Core::printDecayTable() const
 {
-    for (int i = 1; table_length + 1; i ++)
-    {
-        Serial.print(decay_table[i - 1]);
-        Serial.print(", ");
-        if (i % 16 == 0)
-            Serial.println();
-    }
-}
-
-ADSR::ADSR() : input { -0.9995, -0.95, 0.0, -0.95 } // magic numbers set adsr to reasonable start points
-{
-  for (auto &in : input)
+  for (int i = 1; table_length + 1; i ++)
   {
-    in.setGain(0.5);  // set the inputs to cover the range of -1.0 to +1.0
-    in.setOffset(0.5);
+    Serial.print(decay_table[i - 1]);
+    Serial.print(", ");
+    if (i % 16 == 0)
+      Serial.println();
   }
 }
 
@@ -189,11 +180,12 @@ void ADSR::tick()
 
 void ADSR::process()
 {
-    core.set(ADSR_INPUT::ATTACK_TIME, input[ADSR_INPUT::ATTACK_TIME].get() * overall_time);
-    core.set(ADSR_INPUT::DECAY_TIME, input[ADSR_INPUT::DECAY_TIME].get() * overall_time);
-    core.set(ADSR_INPUT::SUSTAIN_LEVEL, input[ADSR_INPUT::SUSTAIN_LEVEL].get());
-    core.set(ADSR_INPUT::RELEASE_TIME, input[ADSR_INPUT::RELEASE_TIME].get() * overall_time);
-    overall_time = input[ADSR_INPUT::OVERALL_TIME].get() * 19.0 + 1.0;
+  core.set(ADSR_INPUT::ATTACK_TIME, mapInput(input[ADSR_INPUT::ATTACK_TIME].get(), 0.001, 10));
+  core.set(ADSR_INPUT::DECAY_TIME, mapInput(input[ADSR_INPUT::DECAY_TIME].get(), 0.001, 10));
+  core.set(ADSR_INPUT::SUSTAIN_LEVEL, mapInput(input[ADSR_INPUT::SUSTAIN_LEVEL].get(), 0.0, 1.0));
+  core.set(ADSR_INPUT::RELEASE_TIME, mapInput(input[ADSR_INPUT::RELEASE_TIME].get(), 0.001, 10));
+
+  overall_time = input[ADSR_INPUT::OVERALL_TIME].get() * 19.0 + 1.0;
 
   core.process();
   output.set(core.getCurrentSample());
