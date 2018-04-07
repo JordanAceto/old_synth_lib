@@ -3,10 +3,10 @@
 #include "synth_library.hpp"
 #include "fx_mod_section/fx_mod_section.hpp"
 
-const uint32_t sample_period_in_micros = 1000000.0 / sample_rate;
+const uint32_t sample_period_in_micros = 1000000.0 / g_sample_rate;
 uint32_t last_tick;
 
-One_Pole_Lowpass lpf;
+Four_Pole_Lowpass lpf;
 
 Mono_VCF_Control vcf_controller;
 
@@ -30,16 +30,18 @@ void setup()
 
 
 
-  analogWriteRes(num_ADC_bits);
-  analogReadResolution(num_DAC_bits);
+  analogWriteRes(g_num_ADC_bits);
+  analogReadResolution(g_num_DAC_bits);
 
-  lpf.setSampleRate(sample_rate);
-  lfo.setSampleRate(sample_rate);
-  adsr.setSampleRate(sample_rate);
+  lpf.setSampleRate(g_sample_rate);
+  lfo.setSampleRate(g_sample_rate);
+  adsr.setSampleRate(g_sample_rate);
 
   //lfo.gate_length_input.plugIn(&pot1.output);
 
-  lfo.setFrequencyRange(1.0, 50.0);
+  lfo.setFrequencyRange(5.0, 50.0);
+
+  lpf.setFrequencyRange(0.01, 10.0);
 
   adsr.gate_input.plugIn(&lfo.output[LFO::SQUARE]);
 
@@ -48,13 +50,13 @@ void setup()
   adsr.input[ADSR_INPUT::SUSTAIN_LEVEL].plugIn(0.0);
   adsr.input[ADSR_INPUT::RELEASE_TIME].plugIn(&pot2.output);
 
-  lfo.frequency_input.plugIn(&encoder.output);
+  lfo.frequency_input.plugIn(&pot1.output);
 
   dac1.input.plugIn(&lfo.output[LFO::SQUARE]);
   //dac1.input.plugIn(&adsr.output);
   //dac1.input.plugIn(&trap.output);
 
-  lpf.cutoff_input.plugIn(&pot1.output);
+  lpf.cutoff_input.plugIn(&encoder.output);
   lpf.input.plugIn(&lfo.output[LFO::SQUARE]);
   dac2.input.plugIn(&lpf.output);
   //dac2.input.plugIn(&encoder.output);

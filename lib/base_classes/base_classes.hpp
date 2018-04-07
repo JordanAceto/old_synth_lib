@@ -4,6 +4,7 @@
 class Is_Tickable
 {
 public:
+  Is_Tickable() : sample_rate(0.0) {}
   virtual void tick() = 0;
   virtual void setSampleRate(float sample_rate) { this->sample_rate = sample_rate; }
 
@@ -20,6 +21,7 @@ public:
 class Has_Frequency_Range
 {
 public:
+  Has_Frequency_Range() : F1(1.0), F2(1.0) {}
   virtual void setFrequencyRange(float F1, float F2)
   {
     this->F1 = F1;

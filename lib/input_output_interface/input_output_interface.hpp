@@ -123,7 +123,7 @@ class Arduino_Analog_Output : public Arduino_Output
 public:
   Arduino_Analog_Output(int pin_number) : Arduino_Output(pin_number)
   {
-    analogWriteFrequency(pin_number, pwm_dac_frequency);
+    analogWriteFrequency(pin_number, g_pwm_dac_frequency);
   }
 
   Signal_Input input;

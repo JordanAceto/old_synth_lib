@@ -27,8 +27,8 @@ public:
   Mono_VCF_Control() : encoder { {24, 25},  {26, 27}, {28, 28} }, // hardwired
                        output_dac { A14, 9, 10 }                  // io pins, eek
   {
-    analogWriteRes(num_ADC_bits);
-    analogReadResolution(num_DAC_bits);
+    analogWriteRes(g_num_ADC_bits);
+    analogReadResolution(g_num_DAC_bits);
 
     lfo_wave_scanner.signal.input[0].plugIn(&lfo.output[LFO::TRIANGLE]);
     lfo_wave_scanner.signal.input[1].plugIn(&lfo.output[LFO::SINE]);

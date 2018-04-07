@@ -2,8 +2,8 @@
 
 Quad_ADSR::Quad_ADSR()
 {
-  analogWriteRes(num_ADC_bits);
-  analogReadResolution(num_DAC_bits);
+  analogWriteRes(g_num_ADC_bits);
+  analogReadResolution(g_num_DAC_bits);
 
   for (int channel = 0; channel < NUM_ADSR_CHANNELS; channel ++)
   {

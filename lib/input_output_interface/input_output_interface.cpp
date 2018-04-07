@@ -81,7 +81,7 @@ void Arduino_Digital_Input::process()
 
 void Arduino_Analog_Input::process()
 {
-  output.set(analogRead(pin_number) / (float)(1 << (num_ADC_bits - 1)) - 1.0);
+  output.set(analogRead(pin_number) / (float)(1 << (g_num_ADC_bits - 1)) - 1.0);
 }
 
 void Arduino_Digital_Output::process()
@@ -95,5 +95,5 @@ void Arduino_Digital_Output::process()
 
 void Arduino_Analog_Output::process()
 {
-  analogWrite(pin_number, (input.get() + 1.0) * float(1 << (num_DAC_bits - 1)));
+  analogWrite(pin_number, (input.get() + 1.0) * float(1 << (g_num_DAC_bits - 1)));
 }
