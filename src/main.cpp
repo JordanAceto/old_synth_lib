@@ -6,7 +6,7 @@
 const uint32_t sample_period_in_micros = 1000000.0 / g_sample_rate;
 uint32_t last_tick;
 
-Four_Pole_Lowpass lpf;
+One_Pole_Lowpass lpf;
 
 Bit_Crusher crusher;
 
@@ -49,9 +49,9 @@ void setup()
   lfo.setSampleRate(g_sample_rate);
   adsr.setSampleRate(g_sample_rate);
 
-  lfo.setFrequencyRange(20.0, 50.0);
+  lfo.setFrequencyRange(20.0, 1000.0);
 
-  lpf.setFrequencyRange(0.01, 10.0);
+  lpf.setFrequencyRange(20.0, 1000.00);
 
   adsr.gate_input.plugIn(&lfo.output[LFO::SQUARE]);
 
@@ -62,14 +62,14 @@ void setup()
 
   lfo.frequency_input.plugIn(&encoder.output);
 
-  dac1.input.plugIn(&lfo.output[LFO::SQUARE]);
+  dac1.input.plugIn(&lfo.output[LFO::SINE]);
   //dac1.input.plugIn(&adsr.output);
-  //dac1.input.plugIn(&trap.output);
+  //dac1.input.plugIn(&pot4.output);
 
   lpf.cutoff_input.plugIn(&encoder.output);
-  lpf.input.plugIn(&lfo.output[LFO::SQUARE]);
-  //dac2.input.plugIn(&lpf.output);
-  dac2.input.plugIn(&crusher.output);
+  lpf.input.plugIn(&lfo.output[LFO::SINE]);
+  dac2.input.plugIn(&lpf.output);
+  //dac2.input.plugIn(&crusher.output);
 }
 
 void loop()
@@ -80,10 +80,10 @@ void loop()
 
     encoder.process();
 
-    //lpf.tick();
-    //lpf.process();
+    lpf.tick();
+    lpf.process();
     vca.process();
-    
+
     crusher.process();
 
     lfo.tick();

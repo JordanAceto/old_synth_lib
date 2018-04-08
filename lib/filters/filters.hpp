@@ -10,9 +10,9 @@ class One_Pole_Lowpass_Core : public Is_Tickable
 {
 public:
 
-  void setCutoffFrequency(float Fc)
+  void setCutoffFrequency(float Fc) // I'm unsure of the correctness of this
   {
-    //Fc = Fc / sample_rate;
+    Fc = Fc / sample_rate;
     b1 = exp(-2.0 * g_pi * Fc);
     a0 = 1.0 - b1;
   }
