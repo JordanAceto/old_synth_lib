@@ -3,9 +3,9 @@
 
 Envelope_Follower::Envelope_Follower()
 {
+  lpf.setFrequencyRange(1.0, 50.0);
   lpf.input.plugIn(&fwr.output);
   lpf.cutoff_input.plugIn(&decay_control.output);
-  decay_control.setGain(0.03);
 }
 
 void Envelope_Follower::setSampleRate(float sample_rate)

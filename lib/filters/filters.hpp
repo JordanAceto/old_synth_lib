@@ -51,26 +51,5 @@ private:
   One_Pole_Lowpass_Core core;
 };
 
-class Four_Pole_Lowpass : public Is_Tickable, public Is_Processable, public Has_Frequency_Range
-{
-public:
-  Four_Pole_Lowpass();
-
-  void setFrequencyRange(float F1, float F2) override
-  {
-    for (auto &s : stage)
-      s.setFrequencyRange(F1, F2);
-  }
-
-  void tick() override;
-  void process() override;
-
-  Signal_Input_Feedthrough input;
-  Signal_Input_Feedthrough cutoff_input;
-  Output_Interface output;
-
-private:
-  One_Pole_Lowpass stage[4];
-};
 
 #endif
