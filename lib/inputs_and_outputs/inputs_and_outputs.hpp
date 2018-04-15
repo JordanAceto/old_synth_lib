@@ -73,6 +73,25 @@ public:
   void process();
 };
 
+class Signal_Input_Feedthrough_With_Delayed_Plug_In : public Signal_Input_Feedthrough
+{
+public:
+  //Signal_Input_With_Delayed_Plug_In() {}
+  //Signal_Input_With_Delayed_Plug_In(float initial_value) : Signal_Input_Feedthrough(initial_value) {}
+
+  virtual void plugIn(const Output_Interface *input) override;
+  virtual void plugIn(float dummy_value) override { Input_Interface::plugIn(dummy_value); }
+  virtual void process() override;
+
+  bool inputStartedTooLow() const { return input_started_too_low; }
+  bool inputStartedTooHigh() const { return input_started_too_high; }
+
+private:
+  const Output_Interface *input_to_plug_in;
+  bool input_started_too_low = false, input_started_too_high = false, input_caught_up_with_dummy_value = false;
+  const float epsilon = 0.01;
+};
+
 class Arduino_Pin : public Is_Processable
 {
 public:

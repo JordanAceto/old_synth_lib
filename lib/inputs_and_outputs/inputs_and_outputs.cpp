@@ -74,6 +74,54 @@ void Signal_Input_Feedthrough::process()
   output.set(get());
 }
 
+void Signal_Input_Feedthrough_With_Delayed_Plug_In::plugIn(const Output_Interface *input)
+{
+  this->input_to_plug_in = input;
+  input_caught_up_with_dummy_value = false;
+  input_started_too_high = false;
+  input_started_too_low = false;
+
+  if (input_to_plug_in->get() > dummy_input->get())
+  {
+    input_started_too_high = true;
+  }
+  else if (input_to_plug_in->get() < dummy_input->get())
+  {
+    input_started_too_low = true;
+  }
+  else
+  {
+      this->input = input_to_plug_in;
+      input_caught_up_with_dummy_value = true;
+      input_started_too_high = false;
+      input_started_too_low = false;
+  }
+}
+
+void Signal_Input_Feedthrough_With_Delayed_Plug_In::process()
+{
+  if (!input_caught_up_with_dummy_value)
+  {
+    if (input_started_too_high && (input_to_plug_in->get() <= dummy_input->get()))
+    {
+        this->input = input_to_plug_in;
+        input_caught_up_with_dummy_value = true;
+        input_started_too_high = false;
+        input_started_too_low = false;
+    }
+
+    if (input_started_too_low && (input_to_plug_in->get() >= dummy_input->get()))
+    {
+        this->input = input_to_plug_in;
+        input_caught_up_with_dummy_value = true;
+        input_started_too_high = false;
+        input_started_too_low = false;
+    }
+  }
+
+  Signal_Input_Feedthrough::process();
+}
+
 void Arduino_Digital_Input::process()
 {
   output.set(digitalRead(pin_number) ? 1.0 : 0.0);
